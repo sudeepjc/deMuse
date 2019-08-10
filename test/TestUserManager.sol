@@ -6,7 +6,7 @@ import "../contracts/UserManager.sol";
 
 contract TestUserManager {
 
-  UserManager um;
+  // UserManager um;
 
   // function beforeAll() public{
 

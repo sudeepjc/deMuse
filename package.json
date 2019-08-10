@@ -1,0 +1,21 @@
+{
+  "name": "deMuse",
+  "version": "1.0.0",
+  "description": "Decentralized Mesuem for painting auction and adoption",
+  "main": "truffle.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "dev": "lite-server",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sudeep Sagar",
+  "license": "ISC",
+  "devDependencies": {
+    "truffle-assertions": "0.9.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "2.3.0"
+  }
+}
