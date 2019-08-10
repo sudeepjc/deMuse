@@ -61,12 +61,12 @@ contract DeMuse is ERC721Mintable,ERC721Full,ERC721Holder{
            pType: PaintingFor(paintingType)
         });
 
-        bool mintStatus = mint(address(this),pID);
+        bool mintStatus = mint(admin,pID);
         if(mintStatus && isAdoptPainting(painting)){
-            emit AdoptionPaintingAdded(address(this),pID);
+            emit AdoptionPaintingAdded(admin,pID);
             adoptionPaintings.push(painting);
         }else if (mintStatus && !isAdoptPainting(painting)){
-            emit AuctionPaintingAdded(address(this),pID);
+            emit AuctionPaintingAdded(admin,pID);
             auctionPaintings.push(painting);
         }
    }

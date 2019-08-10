@@ -1,4 +1,5 @@
 const UserManager = artifacts.require("UserManager");
+const truffleAssert = require("truffle-assertions");
 
 contract("User Manager Test", async accounts => {
 
@@ -16,13 +17,18 @@ contract("User Manager Test", async accounts => {
 
   it("Anbody can register as a user", async () => {
     let umInstance = await UserManager.deployed();
+    let user_1 = "User_1";
 
-    await umInstance.addUser("User_1",{from: registeredUser});
+    let tx = await umInstance.addUser("User_1",{from: registeredUser});
 
-    let response = await umInstance.getUserInfo.call(registeredUser);
+    truffleAssert.eventEmitted(tx, 'UserAdded', (ev) => {
+      return ev.user === registeredUser && ev.userName==user_1;
+    });
+
+    let response = await umInstance.getUserInfo(registeredUser);
 
     assert.equal(response[0],"User_1","name mismatch");
-    assert.equal(response[1], 0 ,"Role mismatch")
+    assert.equal(response[1], 0 ,"Role mismatch");
   });
 
   it("Admin cannot be a registered user", async () => {

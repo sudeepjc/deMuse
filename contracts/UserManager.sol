@@ -17,6 +17,8 @@ contract UserManager{
 
     mapping (address => UserInfo) users;
 
+    event UserAdded(address indexed user, string userName);
+
     constructor() public {
         require(msg.sender != address(0),"Invalid address");
         admin = msg.sender;
@@ -32,6 +34,7 @@ contract UserManager{
         require(msg.sender != address(0),"Invalid address sent");
         require(msg.sender != admin,"Admin cannot be a registered user");
         users[msg.sender] = UserInfo({ name: name, role : uint8(UserRole.Registerted)});
+        emit UserAdded(msg.sender,name);
     }
 
     function getAdmin() public view returns(address){

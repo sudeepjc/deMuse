@@ -23,11 +23,11 @@ contract("DeMuse Test", async accounts => {
     let tx = await deMuse.newPaintingForAdoption("Sun Flower",pID,45,{from: admin});
 
     truffleAssert.eventEmitted(tx, 'AdoptionPaintingAdded', (ev) => {
-        return ev.owner === deMuse.address && ev.paintingID==pID;
+        return ev.owner === admin && ev.paintingID==pID;
     });
 
     truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
-        return ev.to === deMuse.address && ev.tokenId==pID;
+        return ev.to === admin && ev.tokenId==pID;
     });
 
     let newAdoptionCount = await deMuse.numberOfAdoptionPaintings();
@@ -102,11 +102,11 @@ contract("DeMuse Test", async accounts => {
     let tx = await deMuse.newPaintingForAdoption("Haystack",pID,60,{from: admin});
 
     truffleAssert.eventEmitted(tx, 'AdoptionPaintingAdded', (ev) => {
-        return ev.owner === deMuse.address && ev.paintingID==pID;
+        return ev.owner === admin && ev.paintingID==pID;
     });
 
     truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
-        return ev.to === deMuse.address && ev.tokenId==pID;
+        return ev.to === admin && ev.tokenId==pID;
     });
 
     let newAdoptionCount = await deMuse.numberOfAdoptionPaintings();
@@ -131,11 +131,11 @@ contract("DeMuse Test", async accounts => {
     let tx = await deMuse.newPaintingForAuction("LadyWithLamp",pID,60,{from: admin});
 
     truffleAssert.eventEmitted(tx, 'AuctionPaintingAdded', (ev) => {
-        return ev.owner === deMuse.address && ev.paintingID==pID;
+        return ev.owner === admin && ev.paintingID==pID;
     });
 
     truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
-        return ev.to === deMuse.address && ev.tokenId==pID;
+        return ev.to === admin && ev.tokenId==pID;
     });
 
     let newAdoptionCount = await deMuse.numberOfAdoptionPaintings();
