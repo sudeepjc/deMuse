@@ -13,6 +13,7 @@ import "./UserManager.sol";
 contract DeMuse is ERC721Mintable,ERC721Full,ERC721Holder{
 
     address public admin;
+    UserManager userMgr;
 
     event AdoptionPaintingAdded(address indexed owner,uint256 paintingID);
     event AuctionPaintingAdded(address indexed owner,uint256 paintingID);
@@ -38,8 +39,8 @@ contract DeMuse is ERC721Mintable,ERC721Full,ERC721Holder{
     }
 
     constructor( address mgrAddress) ERC721Full("DeMuse", "DEM") public {
-        UserManager um = UserManager(mgrAddress);
-        admin = um.getAdmin();
+        userMgr = UserManager(mgrAddress);
+        admin = userMgr.getAdmin();
     }
 
     function newPaintingForAdoption(string memory _name, uint256 pID, uint128 tCount)
@@ -96,5 +97,30 @@ contract DeMuse is ERC721Mintable,ERC721Full,ERC721Holder{
      */
     function numberOfAuctionPaintings() external view returns (uint){
         return auctionPaintings.length;
+    }
+
+    function getAdoptedBy(uint256 paintingId) external view returns(string memory){
+        string memory empty = "";
+        address adoptedBy = ownerOf(paintingId);
+        (string memory name, uint8 role) = userMgr.getUserInfo(adoptedBy);
+        if(keccak256(abi.encodePacked((name))) == keccak256(abi.encodePacked((empty)))){
+            return addressToString(adoptedBy);
+        }else{
+            return name;
+        }
+    }
+
+    function addressToString(address _addr) private pure returns(string memory) {
+    bytes32 value = bytes32(uint256(_addr));
+    bytes memory alphabet = "0123456789abcdef";
+
+    bytes memory str = new bytes(42);
+    str[0] = '0';
+    str[1] = 'x';
+    for (uint i = 0; i < 20; i++) {
+        str[2+i*2] = alphabet[uint(uint8(value[i + 12] >> 4))];
+        str[3+i*2] = alphabet[uint(uint8(value[i + 12] & 0x0f))];
+    }
+    return string(str);
     }
 }

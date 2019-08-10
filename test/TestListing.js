@@ -2,7 +2,7 @@ const DeMuse = artifacts.require("DeMuse");
 const UserManager = artifacts.require("UserManager");
 const truffleAssert = require("truffle-assertions");
 
-contract( "Listing Adoption", async accounts=>{
+contract( "Adopted By", async accounts=>{
     let admin =accounts[0];
     let registeredUser = accounts[1];
 
@@ -30,9 +30,9 @@ contract( "Listing Adoption", async accounts=>{
         return ev.user === registeredUser && ev.userName==user_1;
     });
 
-
-
-
+    //Get current adopter for the added painting
+    let adoptedBy = await deMuse.getAdoptedBy(pID);
+    assert.equal("admin",adoptedBy,"The current adopter is incorrect");
     
     });
 });
