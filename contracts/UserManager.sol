@@ -8,7 +8,7 @@ contract UserManager{
 
     address private admin;
 
-    enum UserRole { Registerted, Admin}
+    enum UserRole { Unregistered, Registerted, Admin}
 
     struct UserInfo{
         string name;
@@ -25,6 +25,11 @@ contract UserManager{
         users[admin] = UserInfo({ name: 'admin', role : uint8(UserRole.Admin)});
     }
 
+    modifier onlyAdmin() {
+        require(msg.sender == admin,"Only Admin allowed to perform operation");
+        _;
+    }
+
     function getUserInfo(address userAddress) public view returns (string memory ,uint8){
         UserInfo memory user = users[userAddress];
         return (user.name, user.role);
@@ -37,7 +42,22 @@ contract UserManager{
         emit UserAdded(msg.sender,name);
     }
 
+    function addDeMuse(address museumContract) public onlyAdmin payable{
+        users[museumContract] = UserInfo({ name: "Museum", role : uint8(UserRole.Registerted)});
+        emit UserAdded(museumContract,"Museum");
+    }
+
     function getAdmin() public view returns(address){
         return admin;
+    }
+
+    function isRegisteredUser(address userAddress) public view returns (bool){
+        UserInfo memory user = users[userAddress];
+
+        if(user.role == uint8(UserRole.Registerted)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

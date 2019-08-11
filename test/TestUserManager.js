@@ -5,6 +5,7 @@ contract("User Manager Test", async accounts => {
 
   let admin = accounts[0];
   let registeredUser = accounts[1];
+  let unRegisteredUser = accounts[2];
 
   it("UserManager contract is deployed", async () => {
     let umInstance = await UserManager.deployed();
@@ -12,7 +13,7 @@ contract("User Manager Test", async accounts => {
     let response = await umInstance.getUserInfo.call(admin);
 
     assert.equal(response[0],"admin","name mismatch");
-    assert.equal(response[1], 1 ,"Role mismatch")
+    assert.equal(response[1], 2 ,"Role mismatch")
   });
 
   it("Anbody can register as a user", async () => {
@@ -28,7 +29,7 @@ contract("User Manager Test", async accounts => {
     let response = await umInstance.getUserInfo(registeredUser);
 
     assert.equal(response[0],"User_1","name mismatch");
-    assert.equal(response[1], 0 ,"Role mismatch");
+    assert.equal(response[1], 1 ,"Role mismatch");
   });
 
   it("Admin cannot be a registered user", async () => {
@@ -42,5 +43,16 @@ contract("User Manager Test", async accounts => {
     }
 
   });
+
+  it("Test if user is registered or not", async () =>{
+    let umInstance = await UserManager.deployed();
+
+    let status = await umInstance.isRegisteredUser(registeredUser);
+    assert.isTrue(status,"Registered User turned out be not registered");
+
+    status = await umInstance.isRegisteredUser(unRegisteredUser);
+    assert.isFalse(status,"Unregistered User turned out be registered");
+
+  })
 
 });
