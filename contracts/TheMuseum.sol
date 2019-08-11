@@ -135,7 +135,8 @@ contract TheMuseum is ERC721Holder{
     }
 
     function adoptionApproval(uint256 paintingId) public payable {
-        require(userMgr.isRegisteredUser(msg.sender), "Only Registered Users can be adopted");
+        require(userMgr.isRegisteredUser(msg.sender), "Only Registered Users can adopt a painting");
+        require(!deMuse.isAdopted(paintingId),"Painting is already adopted ");
         deMuse.approve(msg.sender,paintingId);
     }
 }

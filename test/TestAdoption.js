@@ -9,7 +9,7 @@ contract( "Painting adoption approval", async accounts=>{
     let unRegisteredUser = accounts[2];
 
     
-    it ("Approve a registered user for adoption", async()=>{
+    it ("Registered user adoptions a painting", async()=>{
 
         let museum = await TheMuseum.deployed();
         let userManager = await UserManager.deployed();
@@ -87,5 +87,23 @@ contract( "Painting adoption approval", async accounts=>{
     let approvedUser = await deMuse.getApproved(pID);
     assert.notEqual(registeredUser,approvedUser,"Approval should not be done");
    
+    });
+
+    it ("Registered user fails trying to adopt a already adopted painting", async()=>{
+
+    let museum = await TheMuseum.deployed();
+    let userManager = await UserManager.deployed();
+    let deMuse = await DeMuse.deployed();
+
+    //Registered User tries to adopt the already adopted sunflower painting
+    let pID = 123456789;
+    
+    try{
+        let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser});
+        assert.fail("Revert: The registered user adopted an already adopted painintg")  
+      }catch(err){
+        assert.include(err.message, "revert", "The error message should contain 'revert'");
+      }
+
     });
 });

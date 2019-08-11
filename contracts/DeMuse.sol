@@ -30,4 +30,13 @@ contract DeMuse is ERC721Mintable,ERC721Full{
         transferFrom(museum,msg.sender, tokenId);
         approve(museum,tokenId);
     }
+
+    function isAdopted(uint256 tokenId) public view returns(bool){
+        address adopter = ownerOf(tokenId);
+        if(adopter == museum){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }
