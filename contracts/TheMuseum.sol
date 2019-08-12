@@ -26,41 +26,43 @@ contract TheMuseum is ERC721Holder{
     struct DigiPainting{
         string name;
         uint256 paintingID;
-        uint128 tokenCount;
+        uint128 weiValue;
         PaintingFor pType;
     }
 
     DigiPainting[] public adoptionPaintings;
     DigiPainting[] public auctionPaintings;
 
-    modifier onlyAdmin() {
-        require(msg.sender == admin,"Only Admin allowed to perform operation");
-        _;
-    }
+    mapping (uint256 => DigiPainting) paintings;
 
-    constructor( address deMuseAddress,address mgrAddress) public {
+    constructor( address deMuseAddress, address mgrAddress) public {
         userMgr = UserManager(mgrAddress);
         admin = msg.sender;
 
         deMuse = DeMuse(deMuseAddress);
     }
 
-    function newPaintingForAdoption(string memory _name, uint256 pID, uint128 tCount)
-    public onlyAdmin{
-        addPainting(_name,pID,tCount,PaintingFor.Adoption);
+    modifier onlyAdmin() {
+        require(msg.sender == admin,"Only Admin allowed to perform operation");
+        _;
     }
 
-    function newPaintingForAuction(string memory _name, uint256 pID, uint128 tCount)
+    function newPaintingForAdoption(string memory _name, uint256 pID, uint128 value)
     public onlyAdmin{
-        addPainting(_name,pID,tCount,PaintingFor.Auction);
+        addPainting(_name,pID,value,PaintingFor.Adoption);
     }
 
-    function addPainting(string memory _name, uint256 pID, uint128 tCount, PaintingFor paintingType)
+    function newPaintingForAuction(string memory _name, uint256 pID, uint128 value)
+    public onlyAdmin{
+        addPainting(_name,pID,value,PaintingFor.Auction);
+    }
+
+    function addPainting(string memory _name, uint256 pID, uint128 value, PaintingFor paintingType)
     private {
         DigiPainting memory painting = DigiPainting({
            name: _name,
            paintingID: pID,
-           tokenCount: tCount,
+           weiValue: value,
            pType: PaintingFor(paintingType)
         });
 
@@ -72,6 +74,7 @@ contract TheMuseum is ERC721Holder{
             emit AuctionPaintingAdded(address(this),pID);
             auctionPaintings.push(painting);
         }
+        paintings[pID] = painting;
    }
 
     /**
@@ -137,6 +140,18 @@ contract TheMuseum is ERC721Holder{
     function adoptionApproval(uint256 paintingId) public payable {
         require(userMgr.isRegisteredUser(msg.sender), "Only Registered Users can adopt a painting");
         require(!deMuse.isAdopted(paintingId),"Painting is already adopted ");
+
+        uint adoptionValue = getAdoptionValue(paintingId);
+        require(adoptionValue <= msg.value, "Adoption not possible for the value sent");
+
         deMuse.approve(msg.sender,paintingId);
+
+        uint balance = msg.value - adoptionValue;
+        msg.sender.transfer(balance);
+    }
+
+    function getAdoptionValue(uint256 paintingId) public view returns(uint256){
+        DigiPainting memory painting = paintings[paintingId];
+        return painting.weiValue;
     }
 }

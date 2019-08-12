@@ -35,7 +35,7 @@ contract( "Painting adoption approval", async accounts=>{
     });
 
     //Registered User adopts the SunFlower painting
-    let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser});
+    let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser, value:60});
     // truffleAssert.eventEmitted(approvedTx, 'Approval', (ev) => {
     //     return ev.owner === museum.address && ev.approved===registeredUser && ev.tokenId===pID;
     // });
@@ -78,7 +78,7 @@ contract( "Painting adoption approval", async accounts=>{
     });
 
     try{
-        let approvedTx = await museum.adoptionApproval(pID,{from: unRegisteredUser});
+        let approvedTx = await museum.adoptionApproval(pID,{from: unRegisteredUser, value: 60});
         assert.fail("Revert: Other users cannot add the painting")  
       }catch(err){
         assert.include(err.message, "revert", "The error message should contain 'revert'");
@@ -99,11 +99,29 @@ contract( "Painting adoption approval", async accounts=>{
     let pID = 123456789;
     
     try{
-        let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser});
+        let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser, value: 60});
         assert.fail("Revert: The registered user adopted an already adopted painintg")  
       }catch(err){
         assert.include(err.message, "revert", "The error message should contain 'revert'");
       }
 
     });
+
+    it ("Registered user fails to adoption with a less value", async()=>{
+
+      let museum = await TheMuseum.deployed();
+      let userManager = await UserManager.deployed();
+      let deMuse = await DeMuse.deployed();
+  
+      //Registered User tries to adopt Haystack painting with lesser value
+      let pID = 987654321;
+      
+      try{
+          let approvedTx = await museum.adoptionApproval(pID,{from: registeredUser, value: 30});
+          assert.fail("Revert: The registered user adopted an already adopted painintg")  
+        }catch(err){
+          assert.include(err.message, "revert", "The error message should contain 'revert'");
+        }
+  
+      });
 });
