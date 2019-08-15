@@ -1,7 +1,6 @@
 const UserManager = artifacts.require("UserManager");
 const DeMuse = artifacts.require("DeMuse");
 const TheMuseum = artifacts.require("TheMuseum");
-const DeChips = artifacts.require("DeChips");
 
 module.exports = function(deployer) {
   deployer.then(async () => {
