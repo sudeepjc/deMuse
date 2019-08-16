@@ -23,6 +23,7 @@ contract UserManager{
         require(msg.sender != address(0),"Invalid address");
         admin = msg.sender;
         users[admin] = UserInfo({ name: 'admin', role : uint8(UserRole.Admin)});
+        emit UserAdded(msg.sender,"admin");
     }
 
     modifier onlyAdmin() {
@@ -37,7 +38,8 @@ contract UserManager{
 
     function addUser(string memory name) public payable {
         require(msg.sender != address(0),"Invalid address sent");
-        require(msg.sender != admin,"Admin cannot be a registered user");
+        require(msg.sender != admin,"Admin cannot register as regular user");
+        require(!isRegisteredUser(msg.sender),"Registered Users cannot register again");
         users[msg.sender] = UserInfo({ name: name, role : uint8(UserRole.Registerted)});
         emit UserAdded(msg.sender,name);
     }

@@ -44,6 +44,18 @@ contract("User Manager Test", async accounts => {
 
   });
 
+  it("Registered User cannot register again", async () => {
+    let umInstance = await UserManager.deployed();
+
+    try{
+      await umInstance.addUser("admin",{from: registeredUser});
+      assert.fail("Revert: Registered User cannot register again- exception was expected")  
+    }catch(err){
+      assert.include(err.message, "revert", "The error message should contain 'revert'");
+    }
+
+  });
+
   it("Test if user is registered or not", async () =>{
     let umInstance = await UserManager.deployed();
 
