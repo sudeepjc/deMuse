@@ -154,4 +154,9 @@ contract TheMuseum is ERC721Holder{
         DigiPainting memory painting = paintings[paintingId];
         return painting.weiValue;
     }
+
+    function reverseAdoption(uint256 paintingId) public onlyAdmin {
+        address adoptedBy = deMuse.ownerOf(paintingId);
+        deMuse.safeTransferFrom(adoptedBy, address(this),paintingId);
+    }
 }

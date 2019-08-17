@@ -27,7 +27,7 @@ contract DeMuse is ERC721Mintable,ERC721Full{
     }
 
     function adoptAndApproveMuseum(uint256 tokenId) public payable {
-        transferFrom(museum,msg.sender, tokenId);
+        safeTransferFrom(museum,msg.sender, tokenId);
         approve(museum,tokenId);
     }
 

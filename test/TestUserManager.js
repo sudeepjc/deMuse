@@ -65,6 +65,6 @@ contract("User Manager Test", async accounts => {
     status = await umInstance.isRegisteredUser(unRegisteredUser);
     assert.isFalse(status,"Unregistered User turned out be registered");
 
-  })
+  });
 
 });
